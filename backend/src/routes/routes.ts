@@ -1,6 +1,6 @@
 import { Router, type Response } from "express";
-import { DataSetController } from "../controller/data-set-controller.js";
+import { GetWikiController } from "../controller/get-wiki-controller.js";
 
 export const appRoutes = Router();
 
-appRoutes.all("/", (req, res) => DataSetController(req, res));
+appRoutes.all("/", (req, res) => GetWikiController(req, res));
