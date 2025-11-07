@@ -3,9 +3,12 @@ import type { Page } from "../models/page.model";
 import { extractWikiLinks, linksToPageIds } from "../utils/wiki-link-parser";
 
 /**
- * Service layer for DataSet operations
- * Follows MVC pattern - handles business logic
- */
+  * Camada de serviço para operações de DataSet.
+  * Contém a lógica de negócio principal da aplicação, orquestrando a
+  * busca e o processamento de dados. Permanece independente de ferramentas
+  * externas ao depender de interfaces (ports) como a IWikiClient.
+*/
+
 export class DataSetService {
   constructor(private readonly wikiClient: IWikiClient) {}
 

@@ -3,9 +3,12 @@ import { DataSetService } from "../services/data-set-service";
 import { WikiClientAdapter } from "../infrastructure/wiki-client-adapter";
 
 /**
- * Controller for DataSet endpoints
- * Follows MVC pattern - handles HTTP requests/responses
- */
+  * Adaptador HTTP para operações de DataSet.
+  * Recebe requisições HTTP, orquestra chamadas para o serviço da aplicação
+  * e formata as respostas HTTP. Atua também como ponto de composição,
+  * conectando as dependências concretas ao núcleo da aplicação.
+*/
+
 export class DataSetController {
   private readonly dataSetService: DataSetService;
 

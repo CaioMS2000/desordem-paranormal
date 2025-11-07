@@ -168,3 +168,4 @@ dist-ssr
 # locals
 *.py
 *.txt
+.claude
