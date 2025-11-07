@@ -1,7 +1,7 @@
-## Problema
+## Problema (Estado Anterior)
 1. **WikiOp.ts** - apenas faz chamadas para a API externa (wikijs)
-2. **DataSetService.ts** - tem lógica de negócio MAS está fortemente acoplada com chamadas externas
-3. **Controller** - é um placeholder
+2. **DataSetService.ts** - tinha lógica de negócio MAS estava fortemente acoplada com chamadas externas
+3. **Controller** - era um placeholder (agora está implementado)
 4. **Repository** - está vazio
 
 O problema é claro: **falta separação de responsabilidades**. Tudo está misturado - lógica de negócio, chamadas externas, parsing de HTML.
@@ -174,7 +174,7 @@ A solução implementada segue os princípios da Arquitetura Hexagonal, garantin
 
 - ✅ **27 testes unitários** passando
 - ✅ **TypeScript** sem erros
-- ✅ **Tempo**: ~0.5s para todos os testes
+- ✅ **Tempo**: ~0.7s para todos os testes
 - ✅ **Arquitetura** testável e manutenível
 
 ---
