@@ -1,8 +1,4 @@
-import * as cheerio from "cheerio";
-import { WikiOp } from "../api/wiki-op.js";
-import type { Page } from "wikijs";
-import { error } from "console";
-import { HtmlHasher } from "../utils/html-hasher.js";
+import { WikiDataManipulationService } from "./wiki-data-manipulation-service";
 
 export interface pagesObjInterface {
   id: number;
@@ -11,31 +7,17 @@ export interface pagesObjInterface {
   html: string;
   connections?: number[];
 }
-
+//talvez tirar esses objetos de arrays e passar eles diretamente pro banco?
 export class GetWikiService {
-  public static async GetAllPages() {
-    const pageNames = await WikiOp.GetPageNames();
+  public static async GetPagesObjs() {
     const allPagesObjects: pagesObjInterface[] = [];
-    const allPagesRecord: Record<number, Page> = {};
+    const pageRecords = await WikiDataManipulationService.GetPagesByPageNames();
 
-    if (!pageNames) {
-      return console.log("não tem pageNames");
+    if (!pageRecords) {
+      throw new Error("deu erro no GetAllPages da service");
     }
 
-    const allPages = pageNames.map((name: string) => WikiOp.getPage(name));
-    const promisseAllPages = await Promise.all(allPages);
-
-    for (const pages of promisseAllPages) {
-      if (!pages) {
-        continue;
-      }
-
-      allPagesRecord[pages.raw.pageid] = pages;
-    }
-
-    const allPagesEntries = Object.entries(allPagesRecord);
-
-    for (const [pageid, page] of allPagesEntries) {
+    for (const [pageid, page] of pageRecords) {
       const pageObj: pagesObjInterface = {
         id: page.raw.pageid,
         name: page.raw.title,
@@ -47,30 +29,16 @@ export class GetWikiService {
     return allPagesObjects;
   }
 
-  public static async GetPageConnections(
+  public static async GetConnectionsObjs(
     htmlPage: string,
     allPages: pagesObjInterface[]
   ) {
-    const cheerioPage = cheerio.load(htmlPage ?? "");
-    const links = cheerioPage("a").toArray();
     const connections: number[] = [];
 
-    const allPagesRecord: Record<string, string> = {};
+    const getPageConnections =
+      await WikiDataManipulationService.GetPageConnections(htmlPage);
 
-    for (const element of links) {
-      const attr = element.attribs;
-      if (
-        !attr.href?.startsWith("/") ||
-        attr.href.startsWith("/wiki/Arquivo:")
-      ) {
-        continue;
-      }
-      allPagesRecord[attr.href] = attr.title!;
-    }
-
-    const allPagesEntries = Object.entries(allPagesRecord);
-
-    for (const entrie of allPagesEntries) {
+    for (const entrie of getPageConnections) {
       const pageObj = allPages.find((page) => {
         return page.name == entrie[1];
       });
@@ -82,28 +50,5 @@ export class GetWikiService {
     }
 
     return connections;
-  }
-
-  public static async GetAllInfo() {
-    // retornar um array de objetos com todas as páginas e suas conexões
-
-    const allPages = await this.GetAllPages();
-    const allPagesObjects: pagesObjInterface[] = [];
-    if (!allPages) {
-      throw new Error("deu erro no allPages");
-    }
-
-    for (const page of allPages) {
-      const connections = await this.GetPageConnections(page.html, allPages);
-      const hash = new HtmlHasher().hasher(page.html);
-
-      allPagesObjects.push({
-        id: page.id,
-        name: page.name,
-        html: hash,
-        link: page.link,
-        connections: connections,
-      });
-    }
   }
 }

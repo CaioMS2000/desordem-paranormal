@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
 
-export async function GetWikiController(req: Request, res: Response) {
-  return res.json("uai sô");
+export class WikiController {
+  public static async GetWiki(req: Request, res: Response) {}
 }
