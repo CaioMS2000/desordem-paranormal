@@ -164,5 +164,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
 local.db
+*.txt
+*.py
