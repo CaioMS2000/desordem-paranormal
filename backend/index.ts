@@ -1,13 +1,15 @@
-import "dotenv/config";
 import express from "express";
 import { appRoutes } from "./src/routes/routes.js";
+
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/libsql";
-import { WikiService } from "./src/services/wiki-service.js";
 const app = express();
 const port = process.env.ENV_PORT;
 
-export const db = drizzle(process.env.DB_FILE_NAME!);
+const client = postgres(process.env.DATABASE_URL!);
+export const db = drizzle({ client });
 
 app.use(appRoutes);
 

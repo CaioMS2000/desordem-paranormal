@@ -1,17 +1,20 @@
-import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, pgTable, primaryKey, text } from "drizzle-orm/pg-core";
 
-export const page = sqliteTable("page", {
-  id: int().primaryKey(),
+export const page = pgTable("page", {
+  id: integer().primaryKey(),
   name: text().notNull(),
   link: text().notNull(),
 });
 
-export const connection = sqliteTable("connections", {
-  id: int().primaryKey({ autoIncrement: true }),
-  originPage: int()
-    .notNull()
-    .references(() => page.id, { onDelete: "cascade" }),
-  targetPage: int()
-    .notNull()
-    .references(() => page.id, { onDelete: "cascade" }),
-});
+export const connection = pgTable(
+  "connections",
+  {
+    originPage: integer()
+      .notNull()
+      .references(() => page.id, { onDelete: "cascade" }),
+    targetPage: integer()
+      .notNull()
+      .references(() => page.id, { onDelete: "cascade" }),
+  },
+  (table) => [primaryKey({ columns: [table.originPage, table.targetPage] })]
+);

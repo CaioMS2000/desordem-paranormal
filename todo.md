@@ -1,0 +1,1 @@
+- criar o cron job de atualização do banco (pensar se nao faz sentido buscar os dados quando o usuário abrir a página)
